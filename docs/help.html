@@ -41,7 +41,7 @@
       <li>Copy the template below, fill it out, and keep entries alphabetized by <code>name</code> within the folder.</li>
       <li>Set <code>town</code> (required); <code>neighborhood</code> is optional but encouraged.</li>
       <li>Set <code>last_verified</code> to when you confirmed the info and include at least one source.</li>
-      <li>Run <code>python scripts/build_data.py</code> to regenerate the aggregated <code>data/restaurants.yaml</code> and <code>docs/restaurants.yaml</code>.</li>
+      <li>Optional: run <code>python scripts/build_data.py</code> to regenerate aggregated YAML for local preview. CI does this automatically for deploys.</li>
     </ol>
 
     <pre><code>- name: Example Restaurant
@@ -81,8 +81,9 @@
       detail: https://example.com/menu</code></pre>
 
     <h2>Validation</h2>
-    <p>Run the lint script before opening a PR:</p>
+    <p>Run the lint script before opening a PR (optional but encouraged):</p>
     <pre><code>pip install -r scripts/requirements.txt
+python scripts/build_data.py
 python scripts/validate.py data/restaurants.yaml</code></pre>
 
     <h2>Guides</h2>

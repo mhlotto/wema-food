@@ -6,7 +6,7 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
 
 ## Repo map
 - `data/restaurants/`: one YAML file per restaurant.
-- `data/restaurants.yaml`: generated aggregate of all restaurants.
+- `data/restaurants.yaml`: generated aggregate (gitignored; built by script/CI).
 - `data/README.md`: schema and style notes.
 - `guides/`: curated writeups (late-night, dietary needs, seasonal picks, etc.).
 - `scripts/validate.py`: lint the data for required fields and formatting.
@@ -21,7 +21,7 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
 2) For restaurants: add a new file in `data/restaurants/` using the template below, fill the fields, and update `last_verified`. Required: `town`; optional but encouraged: `neighborhood`.
 3) Keep notes concise and factual. Include a source (menu link or visit date) in `sources`.
 4) For guides: add a new Markdown file under `guides/` using the guide template in `guides/README.md`.
-5) Run `python scripts/build_data.py` to regenerate aggregated YAML (for validator and Pages).
+5) (Optional for local preview) Run `python scripts/build_data.py` to regenerate aggregated YAML; CI does this automatically.
 6) Open a PR. If you spot mistakes, please also bump `last_verified` to the date you confirmed the info.
 
 ## Restaurant fields (summary)
@@ -79,19 +79,20 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
 
 ## Validate data
 - Install tools: `pip install -r scripts/requirements.txt`.
-- Aggregate and validate:
+- Aggregate and validate locally (optional):
   - `python scripts/build_data.py` (combines `data/restaurants/*.yaml` into `data/restaurants.yaml` and `docs/restaurants.yaml`)
   - `python scripts/validate.py data/restaurants.yaml`
-- The script checks required fields (including `town`), enum values, booleans, and `last_verified` format.
+- The script checks required fields (including `town`), enum values, booleans, and `last_verified` format. CI runs `build_data.py` and `validate.py` on every push/PR.
 
 ## GitHub Pages view
-- In GitHub: Settings -> Pages -> Build and deployment -> Source: Deploy from branch. Pick your default branch (e.g., `main`) and folder `/` so `data/` stays reachable. Save changes.
-- After Pages finishes, open `https://mhlotto.github.io/413-food/docs/` to browse the data. Locally, run `python -m http.server` from repo root and open `http://localhost:8000/docs/`.
+- Pages is deployed via GitHub Actions (workflow `.github/workflows/pages.yml`). In GitHub: Settings -> Pages -> Build and deployment -> Source: GitHub Actions.
+- Live site: https://mhlotto.github.io/413-food/docs/
+- Locally, run `python scripts/build_data.py` then `python -m http.server` from repo root and open `http://localhost:8000/docs/`.
 - The page fetches `docs/restaurants.yaml`, parses it client-side, and lists spots with search and filters. Click a row for a detail view (shows hours, dietary flags, notes, comments, sources).
-- If you keep Pages set to `/docs`, run `python scripts/build_data.py` to copy the aggregated YAML into `docs/restaurants.yaml` before pushing changes.
 
 ## CI
-- GitHub Actions workflow: `.github/workflows/validate.yml` runs `scripts/validate.py data/restaurants.yaml` on pushes and PRs.
+- GitHub Actions workflow: `.github/workflows/validate.yml` runs `build_data.py` and `scripts/validate.py` on pushes and PRs.
+- GitHub Actions workflow: `.github/workflows/pages.yml` builds data and deploys `docs/` to GitHub Pages.
 
 ## Future ideas
 - Add a GitHub Actions workflow to run `scripts/validate.py` on PRs.
