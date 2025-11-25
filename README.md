@@ -1,4 +1,4 @@
-# 413 and Amherst, MA Area Food Guide
+# 413 and Amherst, MA Area Food Guide 
 
 A community-maintained list of where to eat in and around Amherst, MA. Data lives in YAML, and friendly pages can be generated or browsed directly in GitHub. Pull requests are welcome for new spots, corrections, and guides.
 
