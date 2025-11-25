@@ -37,13 +37,15 @@
 
     <h2>Add or edit a restaurant</h2>
     <ol>
-      <li>Open <code>data/restaurants.yaml</code> in the repo.</li>
-      <li>Copy the template below, fill it out, and keep entries alphabetized by <code>name</code>.</li>
+      <li>Add a new file in <code>data/restaurants/</code> (kebab-case name, e.g., <code>my-spot.yaml</code>).</li>
+      <li>Copy the template below, fill it out, and keep entries alphabetized by <code>name</code> within the folder.</li>
+      <li>Set <code>town</code> (required); <code>neighborhood</code> is optional but encouraged.</li>
       <li>Set <code>last_verified</code> to when you confirmed the info and include at least one source.</li>
-      <li>If Pages serves from <code>/docs</code>, copy updates to <code>docs/restaurants.yaml</code> before pushing.</li>
+      <li>Run <code>python scripts/build_data.py</code> to regenerate the aggregated <code>data/restaurants.yaml</code> and <code>docs/restaurants.yaml</code>.</li>
     </ol>
 
     <pre><code>- name: Example Restaurant
+  town: Amherst
   neighborhood: Downtown Amherst
   address: 123 Main St, Amherst, MA
   phone: 413-555-0100

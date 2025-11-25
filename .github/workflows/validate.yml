@@ -21,5 +21,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
+      - name: Build aggregate data
+        run: python scripts/build_data.py
+
       - name: Validate data
         run: python scripts/validate.py data/restaurants.yaml

@@ -13,9 +13,9 @@ except ModuleNotFoundError as exc:  # pragma: no cover
     raise exc
 
 PRICE_VALUES = {"$", "$$", "$$$"}
+DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 ORDERING_VALUES = {"dine-in", "takeout", "delivery"}
 DIETARY_KEYS = ["vegetarian_friendly", "vegan_options", "gluten_free_friendly"]
-DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 HOUR_PATTERN = re.compile(r"^(closed|\d{1,2}:\d{2}-\d{1,2}:\d{2})$")
 DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
@@ -29,7 +29,7 @@ def validate_entry(entry, idx, errors):
     prefix = f"entry[{idx}] ({entry.get('name', 'unnamed')})"
     required_fields = [
         "name",
-        "neighborhood",
+        "town",
         "address",
         "phone",
         "website",

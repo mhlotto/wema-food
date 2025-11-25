@@ -1,45 +1,5 @@
-- name: Pita Pockets
-  neighborhood: Downtown Amherst
-  address: 103 N Pleasant St, Amherst, MA 01002
-  coordinates:
-    lat: 42.3763
-    lng: -72.5191
-  phone: 413-256-3600
-  website: https://www.pitapocketsamherst.com/
-  cuisine: Middle Eastern
-  price: $
-  ordering:
-    - dine-in
-    - takeout
-    - delivery
-  dietary:
-    vegetarian_friendly: true
-    vegan_options: true
-    gluten_free_friendly: false
-  hours:
-    mon: "11:00-21:00"
-    tue: "11:00-21:00"
-    wed: "11:00-21:00"
-    thu: "11:00-21:00"
-    fri: "11:00-22:00"
-    sat: "11:00-22:00"
-    sun: "12:00-20:00"
-  highlight_items:
-    - item: Falafel pita
-      note: Crisp falafel with bright tahini and house hot sauce
-    - item: Chicken shawarma platter
-      note: Large portion, good for sharing
-  notes: Counter-serve; limited seating; delivery via local apps
-  comments:
-    - "Takes a minute to cool; ask for extra hot sauce if you like heat."
-  last_verified: 2024-10-15
-  sources:
-    - type: visited
-      detail: "Oct 2024"
-    - type: menu
-      detail: https://www.pitapocketsamherst.com/menu
-
 - name: Formosa Chinese Restaurant
+  town: Amherst
   neighborhood: Downtown Amherst
   address: 62 Main St, Amherst, MA 01002
   coordinates:
@@ -50,31 +10,73 @@
   cuisine: Taiwanese and Chinese
   price: $$
   ordering:
-    - dine-in
-    - takeout
+  - dine-in
+  - takeout
   dietary:
     vegetarian_friendly: true
     vegan_options: false
     gluten_free_friendly: false
   hours:
-    mon: "11:30-21:30"
-    tue: "11:30-21:30"
-    wed: "11:30-21:30"
-    thu: "11:30-21:30"
-    fri: "11:30-22:00"
-    sat: "11:30-22:00"
-    sun: "12:00-21:00"
+    mon: 11:30-21:30
+    tue: 11:30-21:30
+    wed: 11:30-21:30
+    thu: 11:30-21:30
+    fri: 11:30-22:00
+    sat: 11:30-22:00
+    sun: 12:00-21:00
   highlight_items:
-    - item: Three cup chicken
-      note: Classic, savory, and slightly sweet
-    - item: Beef noodle soup
-      note: Rich broth; request spice level
-  notes: Reservations recommended on weekends; vegetarian options available; gluten-free options limited
+  - item: Three cup chicken
+    note: Classic, savory, and slightly sweet
+  - item: Beef noodle soup
+    note: Rich broth; request spice level
+  notes: Reservations recommended on weekends; vegetarian options available; gluten-free
+    options limited
   comments:
-    - "Lunch specials are good value before 3pm."
+  - Lunch specials are good value before 3pm.
   last_verified: 2024-10-10
   sources:
-    - type: visited
-      detail: "Oct 2024"
-    - type: menu
-      detail: https://www.formosaamherst.com/menu
+  - type: visited
+    detail: Oct 2024
+  - type: menu
+    detail: https://www.formosaamherst.com/menu
+- name: Pita Pockets
+  town: Amherst
+  neighborhood: Downtown Amherst
+  address: 103 N Pleasant St, Amherst, MA 01002
+  coordinates:
+    lat: 42.3763
+    lng: -72.5191
+  phone: 413-256-3600
+  website: https://www.pitapocketsamherst.com/
+  cuisine: Middle Eastern
+  price: $
+  ordering:
+  - dine-in
+  - takeout
+  - delivery
+  dietary:
+    vegetarian_friendly: true
+    vegan_options: true
+    gluten_free_friendly: false
+  hours:
+    mon: 11:00-21:00
+    tue: 11:00-21:00
+    wed: 11:00-21:00
+    thu: 11:00-21:00
+    fri: 11:00-22:00
+    sat: 11:00-22:00
+    sun: 12:00-20:00
+  highlight_items:
+  - item: Falafel pita
+    note: Crisp falafel with bright tahini and house hot sauce
+  - item: Chicken shawarma platter
+    note: Large portion, good for sharing
+  notes: Counter-serve; limited seating; delivery via local apps
+  comments:
+  - Takes a minute to cool; ask for extra hot sauce if you like heat.
+  last_verified: 2024-10-15
+  sources:
+  - type: visited
+    detail: Oct 2024
+  - type: menu
+    detail: https://www.pitapocketsamherst.com/menu

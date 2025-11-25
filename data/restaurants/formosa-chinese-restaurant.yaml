@@ -1,0 +1,40 @@
+- name: Formosa Chinese Restaurant
+  town: Amherst
+  neighborhood: Downtown Amherst
+  address: 62 Main St, Amherst, MA 01002
+  coordinates:
+    lat: 42.3756
+    lng: -72.5189
+  phone: 413-253-7835
+  website: https://www.formosaamherst.com/
+  cuisine: Taiwanese and Chinese
+  price: $$
+  ordering:
+    - dine-in
+    - takeout
+  dietary:
+    vegetarian_friendly: true
+    vegan_options: false
+    gluten_free_friendly: false
+  hours:
+    mon: "11:30-21:30"
+    tue: "11:30-21:30"
+    wed: "11:30-21:30"
+    thu: "11:30-21:30"
+    fri: "11:30-22:00"
+    sat: "11:30-22:00"
+    sun: "12:00-21:00"
+  highlight_items:
+    - item: Three cup chicken
+      note: Classic, savory, and slightly sweet
+    - item: Beef noodle soup
+      note: Rich broth; request spice level
+  notes: Reservations recommended on weekends; vegetarian options available; gluten-free options limited
+  comments:
+    - "Lunch specials are good value before 3pm."
+  last_verified: 2024-10-10
+  sources:
+    - type: visited
+      detail: "Oct 2024"
+    - type: menu
+      detail: https://www.formosaamherst.com/menu

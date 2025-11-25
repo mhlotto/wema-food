@@ -1,5 +1,6 @@
 # Data schema and style
 
+- One YAML file per restaurant under `data/restaurants/` (filenames kebab-case, e.g., `pita-pockets.yaml`).
 - Keep entries alphabetized by `name`.
 - Strings in quotes only when they contain punctuation; phone numbers as `413-555-0100`.
 - `price`: `$`, `$$`, or `$$$` (rough guide, not exact).
@@ -8,10 +9,12 @@
 - `dietary`: booleans; default to `false` if unknown.
 - `highlight_items`: keep to 1-3 items with short notes.
 - `sources`: cite how you know (visit date, menu URL, Instagram update).
+- After edits, run `python scripts/build_data.py` to regenerate `data/restaurants.yaml` and `docs/restaurants.yaml`.
 
 ## Field reference
 - `name`: Restaurant name.
-- `neighborhood`: e.g., Downtown Amherst, North Amherst, Hadley.
+- `town`: e.g., Amherst, Hadley.
+- `neighborhood`: Optional detail (e.g., Downtown Amherst, North Amherst).
 - `address`: Street, city, state.
 - `coordinates`: Optional, `lat` and `lng` decimals.
 - `phone`, `website`: Contact info.

@@ -3,7 +3,8 @@
 A community-maintained list of where to eat in and around Amherst, MA. Data lives in YAML, and friendly pages can be generated or browsed directly in GitHub. Pull requests are welcome for new spots, corrections, and guides.
 
 ## Repo map
-- `data/restaurants.yaml`: canonical restaurant data.
+- `data/restaurants/`: one YAML file per restaurant.
+- `data/restaurants.yaml`: generated aggregate of all restaurants.
 - `data/README.md`: schema and style notes.
 - `guides/`: curated writeups (late-night, dietary needs, seasonal picks, etc.).
 - `scripts/validate.py`: lint the data for required fields and formatting.
@@ -11,10 +12,11 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
 
 ## How to contribute
 1) Pick your change type: add or edit a restaurant, or add a guide.
-2) For restaurants: copy the template below into `data/restaurants.yaml`, fill the fields, and update `last_verified`.
+2) For restaurants: add a new file in `data/restaurants/` using the template below, fill the fields, and update `last_verified`. Required: `town`; optional but encouraged: `neighborhood`.
 3) Keep notes concise and factual. Include a source (menu link or visit date) in `sources`.
 4) For guides: add a new Markdown file under `guides/` using the guide template in `guides/README.md`.
-5) Open a PR. If you spot mistakes, please also bump `last_verified` to the date you confirmed the info.
+5) Run `python scripts/build_data.py` to regenerate aggregated YAML (for validator and Pages).
+6) Open a PR. If you spot mistakes, please also bump `last_verified` to the date you confirmed the info.
 
 ## Restaurant fields (summary)
 - `name`, `neighborhood`, `address`, `phone`, `website`, optional `coordinates` (`lat`, `lng`).
@@ -26,7 +28,8 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
 ## Restaurant entry template
 ```yaml
 - name: Example Restaurant
-  neighborhood: Downtown Amherst
+  town: Amherst
+  neighborhood: Downtown
   address: 123 Main St, Amherst, MA
   coordinates:
     lat: 42.3750
@@ -54,6 +57,8 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
     - item: Signature dish
       note: Short note on why it is good
   notes: Quick facts (parking, cash-only, seasonal, long waits)
+  comments:
+    - Short freeform note
   last_verified: 2024-10-01
   sources:
     - type: visited
@@ -68,14 +73,16 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
 
 ## Validate data
 - Install tools: `pip install -r scripts/requirements.txt`.
-- Run: `python scripts/validate.py data/restaurants.yaml`.
-- The script checks required fields, enum values, booleans, and `last_verified` format.
+- Aggregate and validate:
+  - `python scripts/build_data.py` (combines `data/restaurants/*.yaml` into `data/restaurants.yaml` and `docs/restaurants.yaml`)
+  - `python scripts/validate.py data/restaurants.yaml`
+- The script checks required fields (including `town`), enum values, booleans, and `last_verified` format.
 
 ## GitHub Pages view
 - In GitHub: Settings -> Pages -> Build and deployment -> Source: Deploy from branch. Pick your default branch (e.g., `main`) and folder `/` so `data/` stays reachable. Save changes.
 - After Pages finishes, open `https://<your-username>.github.io/413-food/docs/` to browse the data. Locally, run `python -m http.server` from repo root and open `http://localhost:8000/docs/`.
-- The page fetches `data/restaurants.yaml`, parses it client-side, and lists spots with search and filters. Click a row for a detail view (shows hours, dietary flags, notes, comments, sources).
-- If you keep Pages set to `/docs`, make sure a copy of `restaurants.yaml` exists in `docs/` (kept in sync with `data/restaurants.yaml`), or adjust `DATA_URL` accordingly. A simple approach is to run `cp data/restaurants.yaml docs/restaurants.yaml` before pushing changes.
+- The page fetches `docs/restaurants.yaml`, parses it client-side, and lists spots with search and filters. Click a row for a detail view (shows hours, dietary flags, notes, comments, sources).
+- If you keep Pages set to `/docs`, run `python scripts/build_data.py` to copy the aggregated YAML into `docs/restaurants.yaml` before pushing changes.
 
 ## CI
 - GitHub Actions workflow: `.github/workflows/validate.yml` runs `scripts/validate.py data/restaurants.yaml` on pushes and PRs.
