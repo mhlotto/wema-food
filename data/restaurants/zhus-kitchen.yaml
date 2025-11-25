@@ -1,0 +1,36 @@
+- name: Zhu's Kitchen Asian Bistro and Ramen
+  town: Amherst
+  neighborhood: Downtown Amherst
+  address: 25 S Pleasant Street, Amherst, MA 01002
+  coordinates:
+    lat: 42.3751
+    lng: -72.5197
+  phone: 413-253-7673
+  website: https://zhusamherst.com/
+  cuisine: Asian bistro, Chinese, ramen
+  price: $$
+  ordering:
+    - dine-in
+    - takeout
+  dietary:
+    vegetarian_friendly: true
+    vegan_options: false
+    gluten_free_friendly: false
+  hours:
+    mon: "11:00-21:30"
+    tue: "11:00-21:30"
+    wed: "11:00-21:30"
+    thu: "11:00-21:30"
+    fri: "11:00-22:00"
+    sat: "11:00-22:00"
+    sun: "11:00-21:00"
+  highlight_items:
+    - item: Tonkotsu ramen
+      note: Pork broth with springy noodles and rich aroma
+    - item: General Tso's chicken
+      note: Crispy with balanced sweetness and heat
+  notes: Centrally located on S Pleasant; online ordering via site
+  last_verified: 2024-10-17
+  sources:
+    - type: website
+      detail: https://zhusamherst.com/

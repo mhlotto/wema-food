@@ -13,7 +13,7 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
 - `docs/index.html`: simple GitHub Pages view that reads the YAML and lists spots.
 
 ## Latest updates
-- Last restaurant added: Pita Pockets (2024-10-15)
+- Last restaurant added: Zhu's Kitchen Asian Bistro and Ramen (2024-10-17)
 - Last comment added: “Takes a minute to cool; ask for extra hot sauce if you like heat.” (Pita Pockets)
 
 ## How to contribute
