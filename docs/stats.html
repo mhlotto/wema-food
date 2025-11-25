@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Stats · Amherst, MA Food Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;600&display=swap");
+    :root {
+      font-family: "Manrope", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: #0c1a2b;
+      background: linear-gradient(135deg, #f7f9fc 0%, #eef2f8 100%);
+    }
+    body { margin: 0; padding: 2rem 1.5rem 3rem; }
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 18px 40px rgba(23, 42, 69, 0.08);
+      padding: 1.5rem 1.75rem 2rem;
+    }
+    #topbar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+    #topbar a { color: #0b5cab; text-decoration: none; font-weight: 700; font-size: 0.95rem; }
+    #topbar a:hover { text-decoration: underline; }
+    h1 { margin: 0; letter-spacing: -0.02em; }
+    .muted { color: #555; font-size: 0.95rem; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.85rem; margin: 1rem 0; }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(23, 42, 69, 0.07);
+      padding: 1rem 1.1rem;
+      border: 1px solid #e6e9ef;
+    }
+    .card h3 { margin: 0 0 0.35rem; font-size: 1rem; }
+    .list { margin: 0.25rem 0 0; padding-left: 1.1rem; color: #111; }
+    .footer {
+      max-width: 960px;
+      margin: 1rem auto 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      color: #4b5563;
+      font-size: 0.9rem;
+      padding: 0 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div id="topbar">
+      <div>
+        <h1>Stats</h1>
+        <p class="muted">Quick counts based on <code>docs/restaurants.yaml</code>.</p>
+      </div>
+      <div>
+        <a href="index.html" style="margin-right:12px;">Back to list</a>
+        <a href="help.html">How to contribute</a>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Total restaurants</h3>
+        <div id="total">—</div>
+      </div>
+      <div class="card">
+        <h3>Latest verified</h3>
+        <div id="latest-verified">—</div>
+      </div>
+      <div class="card">
+        <h3>Most recent addition</h3>
+        <div id="latest-added">—</div>
+      </div>
+      <div class="card">
+        <h3>Dietary-friendly</h3>
+        <div id="dietary">—</div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>By town</h3>
+        <ul class="list" id="by-town"></ul>
+      </div>
+      <div class="card">
+        <h3>By price</h3>
+        <ul class="list" id="by-price"></ul>
+      </div>
+      <div class="card">
+        <h3>Ordering modes</h3>
+        <ul class="list" id="by-ordering"></ul>
+      </div>
+    </div>
+  </main>
+  <div class="footer">
+    <div id="last-updated">Last updated: —</div>
+    <div id="copyright">© <span id="copyright-year"></span> 413-food contributors</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+  <script>
+    const DATA_URL = "./restaurants.yaml";
+    const totalEl = document.getElementById("total");
+    const latestVerifiedEl = document.getElementById("latest-verified");
+    const latestAddedEl = document.getElementById("latest-added");
+    const dietaryEl = document.getElementById("dietary");
+    const byTownEl = document.getElementById("by-town");
+    const byPriceEl = document.getElementById("by-price");
+    const byOrderingEl = document.getElementById("by-ordering");
+    const lastUpdatedEl = document.getElementById("last-updated");
+    const copyrightYearEl = document.getElementById("copyright-year");
+
+    async function loadData() {
+      const res = await fetch(DATA_URL);
+      if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+      const text = await res.text();
+      const data = jsyaml.load(text);
+      if (!Array.isArray(data)) throw new Error("Data format unexpected");
+      renderStats(data);
+    }
+
+    function renderStats(entries) {
+      totalEl.textContent = entries.length;
+
+      const sortedByName = entries.slice().sort((a, b) => a.name.localeCompare(b.name));
+      const sortedByVerified = entries
+        .filter((e) => e.last_verified)
+        .slice()
+        .sort((a, b) => new Date(b.last_verified) - new Date(a.last_verified));
+      if (sortedByVerified[0]) {
+        latestVerifiedEl.textContent = `${sortedByVerified[0].name} (${sortedByVerified[0].last_verified})`;
+      }
+
+      if (sortedByName[sortedByName.length - 1]) {
+        latestAddedEl.textContent = sortedByName[sortedByName.length - 1].name;
+      }
+
+      const dietaryCounts = {
+        vegetarian: entries.filter((e) => e.dietary && e.dietary.vegetarian_friendly).length,
+        vegan: entries.filter((e) => e.dietary && e.dietary.vegan_options).length,
+        glutenFree: entries.filter((e) => e.dietary && e.dietary.gluten_free_friendly).length,
+      };
+      dietaryEl.textContent = `Vegetarian-friendly: ${dietaryCounts.vegetarian}, Vegan options: ${dietaryCounts.vegan}, Gluten-free friendly: ${dietaryCounts.glutenFree}`;
+
+      renderList(byTownEl, countBy(entries, "town"));
+      renderList(byPriceEl, countBy(entries, "price"));
+      renderList(byOrderingEl, countOrdering(entries));
+
+      renderLastUpdated(entries);
+    }
+
+    function countBy(entries, key) {
+      const map = {};
+      for (const e of entries) {
+        const val = e[key] || "Unspecified";
+        map[val] = (map[val] || 0) + 1;
+      }
+      return map;
+    }
+
+    function countOrdering(entries) {
+      const map = {};
+      for (const e of entries) {
+        if (Array.isArray(e.ordering)) {
+          for (const o of e.ordering) {
+            map[o] = (map[o] || 0) + 1;
+          }
+        }
+      }
+      return map;
+    }
+
+    function renderList(el, map) {
+      const items = Object.entries(map)
+        .sort((a, b) => b[1] - a[1])
+        .map(([k, v]) => `<li>${escapeHtml(k)}: ${v}</li>`);
+      el.innerHTML = items.join("");
+    }
+
+    function renderLastUpdated(entries = []) {
+      const dates = entries
+        .map((e) => e.last_verified)
+        .filter(Boolean)
+        .map((d) => new Date(d))
+        .filter((d) => !Number.isNaN(d.getTime()));
+      if (!dates.length) return;
+      const latest = new Date(Math.max(...dates.map((d) => d.getTime())));
+      const fmt = latest.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+      lastUpdatedEl.textContent = `Last updated: ${fmt}`;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    copyrightYearEl.textContent = new Date().getFullYear();
+    loadData().catch((err) => {
+      console.error(err);
+      totalEl.textContent = "Could not load data";
+    });
+  </script>
+</body>
+</html>

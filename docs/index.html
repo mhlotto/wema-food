@@ -15,6 +15,16 @@
       margin: 0;
       padding: 2rem 1.5rem 3rem;
     }
+    #footer {
+      max-width: 1180px;
+      margin: 1rem auto 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      color: #4b5563;
+      font-size: 0.9rem;
+      padding: 0 0.25rem;
+    }
     main {
       max-width: 1180px;
       margin: 0 auto;
@@ -138,9 +148,12 @@
     <div id="topbar">
       <div>
         <h1>Amherst, MA Food Guide</h1>
-    <p class="muted">Client-side view of <code>docs/restaurants.yaml</code>. Use search to filter by name, town, neighborhood, or cuisine.</p>
+        <p class="muted">Client-side view of <code>docs/restaurants.yaml</code>. Use search to filter by name, town, neighborhood, or cuisine.</p>
       </div>
-      <a href="help.html">How to contribute</a>
+      <div>
+        <a href="stats.html" style="margin-right:12px;">Stats</a>
+        <a href="help.html">How to contribute</a>
+      </div>
     </div>
     <div id="status">Loading data…</div>
     <div id="controls">
@@ -182,6 +195,10 @@
       </aside>
     </div>
   </main>
+  <footer id="footer">
+    <div id="last-updated">Last updated: —</div>
+    <div id="copyright">© <span id="copyright-year"></span> 413-food contributors</div>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
   <script>
@@ -200,6 +217,8 @@
     const detailLinks = document.getElementById("detail-links");
     const detailTags = document.getElementById("detail-tags");
     const detailSections = document.getElementById("detail-sections");
+    const lastUpdatedEl = document.getElementById("last-updated");
+    const copyrightYearEl = document.getElementById("copyright-year");
 
     searchEl.addEventListener("input", applyFilters);
     priceEl.addEventListener("change", applyFilters);
@@ -213,6 +232,7 @@
         if (!Array.isArray(data)) throw new Error("Data format unexpected");
         state.entries = data.slice().sort((a, b) => a.name.localeCompare(b.name));
         statusEl.textContent = `Loaded ${state.entries.length} spots`;
+        renderLastUpdated(state.entries);
         state.filtered = state.entries;
         renderTable();
         hydrateFromHash();
@@ -368,6 +388,19 @@
       return String(str).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
     }
 
+    function renderLastUpdated(entries = []) {
+      const dates = entries
+        .map((e) => e.last_verified)
+        .filter(Boolean)
+        .map((d) => new Date(d))
+        .filter((d) => !Number.isNaN(d.getTime()));
+      if (dates.length === 0) return;
+      const latest = new Date(Math.max(...dates.map((d) => d.getTime())));
+      const fmt = latest.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+      lastUpdatedEl.textContent = `Last updated: ${fmt}`;
+    }
+
+    copyrightYearEl.textContent = new Date().getFullYear();
     loadData();
   </script>
 </body>

@@ -2,6 +2,8 @@
 
 A community-maintained list of where to eat in and around Amherst, MA. Data lives in YAML, and friendly pages can be generated or browsed directly in GitHub. Pull requests are welcome for new spots, corrections, and guides.
 
+**Live site:** https://mhlotto.github.io/413-food/docs/
+
 ## Repo map
 - `data/restaurants/`: one YAML file per restaurant.
 - `data/restaurants.yaml`: generated aggregate of all restaurants.
@@ -9,6 +11,10 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
 - `guides/`: curated writeups (late-night, dietary needs, seasonal picks, etc.).
 - `scripts/validate.py`: lint the data for required fields and formatting.
 - `docs/index.html`: simple GitHub Pages view that reads the YAML and lists spots.
+
+## Latest updates
+- Last restaurant added: Pita Pockets (2024-10-15)
+- Last comment added: “Takes a minute to cool; ask for extra hot sauce if you like heat.” (Pita Pockets)
 
 ## How to contribute
 1) Pick your change type: add or edit a restaurant, or add a guide.
@@ -80,7 +86,7 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
 
 ## GitHub Pages view
 - In GitHub: Settings -> Pages -> Build and deployment -> Source: Deploy from branch. Pick your default branch (e.g., `main`) and folder `/` so `data/` stays reachable. Save changes.
-- After Pages finishes, open `https://<your-username>.github.io/413-food/docs/` to browse the data. Locally, run `python -m http.server` from repo root and open `http://localhost:8000/docs/`.
+- After Pages finishes, open `https://mhlotto.github.io/413-food/docs/` to browse the data. Locally, run `python -m http.server` from repo root and open `http://localhost:8000/docs/`.
 - The page fetches `docs/restaurants.yaml`, parses it client-side, and lists spots with search and filters. Click a row for a detail view (shows hours, dietary flags, notes, comments, sources).
 - If you keep Pages set to `/docs`, run `python scripts/build_data.py` to copy the aggregated YAML into `docs/restaurants.yaml` before pushing changes.
 
