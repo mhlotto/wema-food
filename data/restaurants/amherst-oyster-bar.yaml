@@ -1,0 +1,38 @@
+- name: Amherst Oyster Bar
+  town: Amherst
+  neighborhood: Downtown Amherst
+  address: 51 N Pleasant St, Amherst, MA 01002
+  coordinates:
+    lat: 42.3765
+    lng: -72.5202
+  phone: 
+  website: https://www.amherstoysterbar.com/
+  cuisine: Seafood, oysters
+  price: $$$
+  ordering:
+    - dine-in
+    - takeout
+  dietary:
+    vegetarian_friendly: false
+    vegan_options: false
+    gluten_free_friendly: false
+  hours:
+    mon: "16:00-22:00"
+    tue: "16:00-22:00"
+    wed: "16:00-22:00"
+    thu: "16:00-22:00"
+    fri: "16:00-22:00"
+    sat: "16:00-22:00"
+    sun: "11:00-22:00"
+  highlight_items:
+    - item: Raw bar selection
+      note: Oysters on the half shell and shrimp cocktail, rotating daily
+    - item: Seafood tower
+      note: Oysters, shrimp, tartare, lobster tail, lump crab; shareable centerpiece
+    - item: Seared scallops
+      note: Pomme puree, swiss chard, lemon-caper brown butter
+  notes: Former Judie's location; dinner daily from 4pm; Sunday brunch 11am-2pm plus dinner
+  last_verified: 2025-11-25
+  sources:
+    - type: website
+      detail: https://www.amherstoysterbar.com/

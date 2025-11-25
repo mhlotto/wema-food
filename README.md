@@ -13,7 +13,7 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
 - `docs/index.html`: simple GitHub Pages view that reads the YAML and lists spots.
 
 ## Latest updates
-- Last restaurant added: Johnny's Tavern (2025-11-25)
+- Last restaurant added: Amherst Oyster Bar (2025-11-25)
 - Last comment added: “Takes a minute to cool; ask for extra hot sauce if you like heat.” (Pita Pockets)
 
 ## How to contribute
