@@ -2,7 +2,7 @@
 
 A community-maintained list of where to eat in and around Amherst, MA. Data lives in YAML, and friendly pages can be generated or browsed directly in GitHub. Pull requests are welcome for new spots, corrections, and guides.
 
-**Live site:** https://mhlotto.github.io/413-food/docs/
+**Live site:** https://mhlotto.github.io/413-food
 
 ## Repo map
 - `data/restaurants/`: one YAML file per restaurant.
