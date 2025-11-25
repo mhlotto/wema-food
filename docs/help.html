@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>How to Contribute · Amherst Food Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      color: #111;
+      background: #f6f6f9;
+    }
+    body { margin: 0; padding: 2rem 1.5rem 3rem; }
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      padding: 1.5rem 1.75rem 2rem;
+    }
+    h1 { margin-top: 0; letter-spacing: -0.02em; }
+    h2 { margin-top: 1.25rem; }
+    code { background: #f0f2f7; padding: 0.1rem 0.3rem; border-radius: 4px; }
+    a { color: #0b5cab; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul { padding-left: 1.3rem; }
+    .muted { color: #555; }
+    .back { display: inline-block; margin-bottom: 0.75rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <a class="back" href="index.html">← Back to list</a>
+    <h1>How to contribute</h1>
+    <p class="muted">Add restaurants or guides via pull request. Keep entries factual and include sources.</p>
+
+    <h2>Add or edit a restaurant</h2>
+    <ol>
+      <li>Open <code>data/restaurants.yaml</code> in the repo.</li>
+      <li>Copy the template below, fill it out, and keep entries alphabetized by <code>name</code>.</li>
+      <li>Set <code>last_verified</code> to when you confirmed the info and include at least one source.</li>
+      <li>If Pages serves from <code>/docs</code>, copy updates to <code>docs/restaurants.yaml</code> before pushing.</li>
+    </ol>
+
+    <pre><code>- name: Example Restaurant
+  neighborhood: Downtown Amherst
+  address: 123 Main St, Amherst, MA
+  phone: 413-555-0100
+  website: https://example.com
+  cuisine: Example cuisine
+  price: $$
+  ordering:
+    - dine-in
+    - takeout
+  dietary:
+    vegetarian_friendly: true
+    vegan_options: false
+    gluten_free_friendly: false
+  hours:
+    mon: "11:00-21:00"
+    tue: "11:00-21:00"
+    wed: "11:00-21:00"
+    thu: "11:00-21:00"
+    fri: "11:00-22:00"
+    sat: "11:00-22:00"
+    sun: "12:00-20:00"
+  highlight_items:
+    - item: Signature dish
+      note: Why it is good
+  notes: Parking, cash-only, waits, etc.
+  comments:
+    - Short freeform note
+  last_verified: 2024-10-15
+  sources:
+    - type: visited
+      detail: "Oct 2024"
+    - type: menu
+      detail: https://example.com/menu</code></pre>
+
+    <h2>Validation</h2>
+    <p>Run the lint script before opening a PR:</p>
+    <pre><code>pip install -r scripts/requirements.txt
+python scripts/validate.py data/restaurants.yaml</code></pre>
+
+    <h2>Guides</h2>
+    <p>Create a new file in <code>guides/</code> (e.g., <code>late-night.md</code>) using the template in <code>guides/README.md</code>. Keep guides concise and link back to spots in the YAML.</p>
+
+    <h2>Sources and tone</h2>
+    <ul>
+      <li>Prefer recent visits, menu URLs, or official social posts.</li>
+      <li>Keep descriptions factual; avoid copying menu text verbatim.</li>
+    </ul>
+
+    <p class="muted">For the full README, see the repository root.</p>
+  </main>
+</body>
+</html>
