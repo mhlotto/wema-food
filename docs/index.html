@@ -77,15 +77,6 @@
       border-color: #0b5cab;
       box-shadow: 0 0 0 3px rgba(11, 92, 171, 0.12);
     }
-    #layout {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: 1.25rem;
-      align-items: start;
-    }
-    @media (max-width: 960px) {
-      #layout { grid-template-columns: 1fr; }
-    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -133,14 +124,8 @@
       border: 1px solid #e6e9ef;
     }
     .muted { color: #666; font-size: 0.9rem; }
-    #detail h2 { margin: 0 0 0.25rem; }
-    #detail h3 { margin-bottom: 0.35rem; margin-top: 0.9rem; }
-    #detail-meta { margin: 0.1rem 0 0.4rem; }
-    #detail-links { margin-bottom: 0.75rem; }
-    #detail-links a { color: #0b5cab; text-decoration: none; margin-right: 0.65rem; }
-    #detail-links a:hover { text-decoration: underline; }
-    #detail-sections div + div { margin-top: 0.35rem; }
-    #empty-detail { text-align: center; color: #6b7280; padding: 1rem 0.5rem; }
+    .detail-row td { background: #fff; }
+    .detail-card { margin-top: 0.5rem; }
   </style>
 </head>
 <body>
@@ -166,12 +151,11 @@
         <option value="$$$">$$$</option>
       </select>
     </div>
-    <div id="layout">
-      <div class="table-wrap">
-        <table id="table">
-          <thead>
-            <tr>
-              <th>Name</th>
+    <div class="table-wrap">
+      <table id="table">
+        <thead>
+          <tr>
+            <th>Name</th>
             <th>Town</th>
             <th>Neighborhood</th>
             <th>Cuisine</th>
@@ -183,17 +167,6 @@
         <tbody></tbody>
       </table>
     </div>
-      <aside class="card" id="detail-card">
-        <div id="empty-detail">Select a restaurant to see details.</div>
-        <section id="detail" hidden>
-          <h2 id="detail-name"></h2>
-          <p class="muted" id="detail-meta"></p>
-          <div id="detail-links"></div>
-          <div id="detail-tags"></div>
-          <div id="detail-sections"></div>
-        </section>
-      </aside>
-    </div>
   </main>
   <footer id="footer">
     <div id="last-updated">Last updated: —</div>
@@ -203,20 +176,13 @@
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
   <script>
     const DATA_URL = "./restaurants.yaml";
-    const state = { entries: [], filtered: [], selected: null };
+    const state = { entries: [], filtered: [], selectedSlug: null };
+    let currentDetailRow = null;
 
     const statusEl = document.getElementById("status");
     const searchEl = document.getElementById("search");
     const priceEl = document.getElementById("priceFilter");
     const tbody = document.querySelector("#table tbody");
-    const detailCard = document.getElementById("detail-card");
-    const detailEmpty = document.getElementById("empty-detail");
-    const detail = document.getElementById("detail");
-    const detailName = document.getElementById("detail-name");
-    const detailMeta = document.getElementById("detail-meta");
-    const detailLinks = document.getElementById("detail-links");
-    const detailTags = document.getElementById("detail-tags");
-    const detailSections = document.getElementById("detail-sections");
     const lastUpdatedEl = document.getElementById("last-updated");
     const copyrightYearEl = document.getElementById("copyright-year");
 
@@ -255,17 +221,19 @@
     }
 
     function renderTable() {
+      clearDetailRow();
       tbody.innerHTML = "";
       for (const entry of state.filtered) {
         const row = document.createElement("tr");
         row.tabIndex = 0;
         row.setAttribute("role", "button");
         row.setAttribute("aria-label", `Details for ${entry.name}`);
-        row.addEventListener("click", () => selectEntry(entry));
+        row.dataset.slug = slugify(entry.name || "");
+        row.addEventListener("click", () => selectEntry(entry, row));
         row.addEventListener("keypress", (e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
-            selectEntry(entry);
+            selectEntry(entry, row);
           }
         });
         row.innerHTML = `
@@ -293,42 +261,46 @@
         .join("");
     }
 
-    function selectEntry(entry) {
-      state.selected = entry;
-      const slug = slugify(entry.name || "");
-      if (slug) {
-        history.replaceState(null, "", `#${slug}`);
+    function clearDetailRow() {
+      if (currentDetailRow) {
+        currentDetailRow.remove();
+        currentDetailRow = null;
       }
-      renderDetail(entry);
+    }
+
+    function selectEntry(entry, row) {
+      clearDetailRow();
+      const slug = slugify(entry.name || "");
+      state.selectedSlug = slug;
+      if (slug) history.replaceState(null, "", `#${slug}`);
+      const detailRow = document.createElement("tr");
+      detailRow.className = "detail-row";
+      detailRow.innerHTML = `<td colspan="7">${renderDetailCard(entry)}</td>`;
+      row.insertAdjacentElement("afterend", detailRow);
+      currentDetailRow = detailRow;
     }
 
     function hydrateFromHash() {
       const hash = window.location.hash.replace("#", "").trim();
       if (!hash) return;
       const match = state.entries.find((e) => slugify(e.name || "") === hash);
-      if (match) {
-        selectEntry(match);
+      const row = tbody.querySelector(`tr[data-slug="${hash}"]`);
+      if (match && row) {
+        selectEntry(match, row);
       }
     }
 
-    function renderDetail(entry) {
-      detail.hidden = false;
-      detailEmpty.style.display = "none";
-      detailName.textContent = entry.name || "";
+    function renderDetailCard(entry) {
       const metaParts = [entry.town, entry.neighborhood, entry.cuisine].filter(Boolean);
-      detailMeta.textContent = metaParts.join(" · ");
-
       const links = [];
       if (entry.website) links.push(`<a href="${escapeAttr(entry.website)}" target="_blank" rel="noopener noreferrer">Website</a>`);
       if (entry.phone) links.push(`<a href="tel:${escapeAttr(entry.phone)}">Call</a>`);
-      detailLinks.innerHTML = links.join(" · ");
 
-      const tagList = [];
-      if (entry.town) tagList.push(`<span class="pill">${escapeHtml(entry.town)}</span>`);
-      if (entry.neighborhood) tagList.push(`<span class="pill">${escapeHtml(entry.neighborhood)}</span>`);
-      if (entry.price) tagList.push(`<span class="pill">Price ${escapeHtml(entry.price)}</span>`);
-      if (entry.last_verified) tagList.push(`<span class="pill">Verified ${escapeHtml(entry.last_verified)}</span>`);
-      detailTags.innerHTML = tagList.join("");
+      const tags = [];
+      if (entry.town) tags.push(pill(entry.town));
+      if (entry.neighborhood) tags.push(pill(entry.neighborhood));
+      if (entry.price) tags.push(pill(`Price ${entry.price}`));
+      if (entry.last_verified) tags.push(pill(`Verified ${entry.last_verified}`));
 
       const sections = [];
       sections.push(section("Ordering", renderOrdering(entry.ordering)));
@@ -343,12 +315,30 @@
       if (Array.isArray(entry.sources) && entry.sources.length) {
         sections.push(section("Sources", entry.sources.map(renderSource).join("")));
       }
-      detailSections.innerHTML = sections.join("");
+
+      return `
+        <div class="card detail-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem;">
+            <div>
+              <h2 style="margin:0 0 0.25rem;">${escapeHtml(entry.name || "")}</h2>
+              <p class="muted" style="margin:0.1rem 0 0;">${escapeHtml(metaParts.join(" · "))}</p>
+            </div>
+            ${entry.website ? `<a href="${escapeAttr(entry.website)}" target="_blank" rel="noopener noreferrer" style="color:#0b5cab;">Website</a>` : ""}
+          </div>
+          <div style="margin:0.4rem 0 0.25rem;">${tags.join("")}</div>
+          <div style="margin:0.2rem 0 0.4rem;">${links.join(" · ")}</div>
+          ${sections.join("")}
+        </div>
+      `;
     }
 
     function section(title, content) {
       if (!content) return "";
       return `<div><h3>${escapeHtml(title)}</h3><div>${content}</div></div>`;
+    }
+
+    function pill(text) {
+      return `<span class="pill">${escapeHtml(text)}</span>`;
     }
 
     function renderDietary(dietary = {}) {
