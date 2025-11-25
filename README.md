@@ -1,2 +1,81 @@
-# wema-food
-amherst, ma area food
+# Amherst, MA Food Guide
+
+A community-maintained list of where to eat in and around Amherst, MA. Data lives in YAML, and friendly pages can be generated or browsed directly in GitHub. Pull requests are welcome for new spots, corrections, and guides.
+
+## Repo map
+- `data/restaurants.yaml`: canonical restaurant data.
+- `data/README.md`: schema and style notes.
+- `guides/`: curated writeups (late-night, dietary needs, seasonal picks, etc.).
+- `scripts/validate.py`: lint the data for required fields and formatting.
+- `docs/index.html`: simple GitHub Pages view that reads the YAML and lists spots.
+
+## How to contribute
+1) Pick your change type: add or edit a restaurant, or add a guide.
+2) For restaurants: copy the template below into `data/restaurants.yaml`, fill the fields, and update `last_verified`.
+3) Keep notes concise and factual. Include a source (menu link or visit date) in `sources`.
+4) For guides: add a new Markdown file under `guides/` using the guide template in `guides/README.md`.
+5) Open a PR. If you spot mistakes, please also bump `last_verified` to the date you confirmed the info.
+
+## Restaurant fields (summary)
+- `name`, `neighborhood`, `address`, `phone`, `website`, optional `coordinates` (`lat`, `lng`).
+- `cuisine`, `price` ($/$$/$$$), `ordering` (dine-in/takeout/delivery), `hours` (strings like `11:00-21:00`).
+- `dietary` flags (vegetarian_friendly, vegan_options, gluten_free_friendly), `highlight_items` (signature dishes), `notes` (parking, cash-only, waits).
+- `last_verified` (YYYY-MM-DD) and `sources` (visited/menu/social links).
+
+## Restaurant entry template
+```yaml
+- name: Example Restaurant
+  neighborhood: Downtown Amherst
+  address: 123 Main St, Amherst, MA
+  coordinates:
+    lat: 42.3750
+    lng: -72.5190
+  phone: 413-555-0100
+  website: https://example.com
+  cuisine: Example cuisine
+  price: $$
+  ordering:
+    - dine-in
+    - takeout
+  dietary:
+    vegetarian_friendly: true
+    vegan_options: false
+    gluten_free_friendly: false
+  hours:
+    mon: "11:00-21:00"
+    tue: "11:00-21:00"
+    wed: "11:00-21:00"
+    thu: "11:00-21:00"
+    fri: "11:00-22:00"
+    sat: "11:00-22:00"
+    sun: "12:00-20:00"
+  highlight_items:
+    - item: Signature dish
+      note: Short note on why it is good
+  notes: Quick facts (parking, cash-only, seasonal, long waits)
+  last_verified: 2024-10-01
+  sources:
+    - type: visited
+      detail: "Oct 2024"
+    - type: menu
+      detail: https://example.com/menu
+```
+
+## Guides
+- Create a new Markdown file in `guides/` (e.g., `guides/late-night.md`).
+- Use the template in `guides/README.md` (title, date, focus, and a small list of spots with links back to `data/restaurants.yaml`).
+
+## Validate data
+- Install tools: `pip install -r scripts/requirements.txt`.
+- Run: `python scripts/validate.py data/restaurants.yaml`.
+- The script checks required fields, enum values, booleans, and `last_verified` format.
+
+## GitHub Pages view
+- Enable GitHub Pages for this repo using the `docs/` folder as the source.
+- Open `docs/index.html` via Pages or locally (e.g., `python -m http.server` from repo root) to browse the data without cloning the YAML.
+- The page fetches `data/restaurants.yaml`, parses it client-side, and lists spots with search and filters.
+
+## Future ideas
+- Add a GitHub Actions workflow to run `scripts/validate.py` on PRs.
+- Extend validation to flag stale `last_verified` dates and missing sources.
+- Keep a `maps/` GeoJSON for quick visualization.
