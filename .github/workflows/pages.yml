@@ -4,6 +4,10 @@ on:
   push:
     branches: [ main ]
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pages: write
@@ -14,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,7 +41,7 @@ jobs:
           path: docs
 
   deploy:
-    needs: build
+    needs: validate
     runs-on: ubuntu-latest
     environment:
       name: github-pages
