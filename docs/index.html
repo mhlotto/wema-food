@@ -172,18 +172,17 @@
           <thead>
             <tr>
               <th>Name</th>
-              <th>Town</th>
-              <th>Neighborhood</th>
-              <th>Cuisine</th>
-              <th>Price</th>
-              <th>Ordering</th>
-              <th>Highlights</th>
-              <th>Last verified</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+            <th>Town</th>
+            <th>Neighborhood</th>
+            <th>Cuisine</th>
+            <th>Price</th>
+            <th>Ordering</th>
+            <th>Highlights</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
       <aside class="card" id="detail-card">
         <div id="empty-detail">Select a restaurant to see details.</div>
         <section id="detail" hidden>
@@ -277,7 +276,6 @@
           <td>${escapeHtml(entry.price || "")}</td>
           <td>${renderOrdering(entry.ordering)}</td>
           <td>${renderHighlights(entry.highlight_items)}</td>
-          <td>${escapeHtml(entry.last_verified || "")}</td>
         `;
         tbody.appendChild(row);
       }
