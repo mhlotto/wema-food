@@ -13,8 +13,8 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
 - `docs/index.html`: simple GitHub Pages view that reads the YAML and lists spots.
 
 ## Latest updates
-- Last restaurant added: Athena's Pizza Amherst (2025-11-25)
-- Last comment added: “Takes a minute to cool; ask for extra hot sauce if you like heat.” (Pita Pockets)
+- Last restaurant added: Paradise of India (2025-11-28)
+- Last comment added: “Open on Thanksgiving Day 2025” (Paradise of India)
 
 ## How to contribute
 1) Pick your change type: add or edit a restaurant, or add a guide.

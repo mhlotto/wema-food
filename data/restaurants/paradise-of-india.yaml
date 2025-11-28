@@ -1,0 +1,41 @@
+- name: Paradise of India
+  town: Amherst
+  neighborhood: Downtown Amherst
+  address: 87 Main St, Amherst, MA 01002
+  coordinates:
+    lat: 42.3755
+    lng: -72.5181
+  phone: 413-256-1067
+  website: https://paradiseofindia.com/
+  cuisine: Indian
+  price: $$
+  ordering:
+    - dine-in
+    - takeout
+    - delivery
+  dietary:
+    vegetarian_friendly: true
+    vegan_options: false
+    gluten_free_friendly: false
+  hours:
+    mon: "12:00-21:00"
+    tue: "12:00-21:00"
+    wed: "12:00-21:00"
+    thu: "12:00-21:00"
+    fri: "12:00-21:00"
+    sat: "12:00-21:00"
+    sun: "12:00-21:00"
+  highlight_items:
+    - item: Chicken tikka masala
+      note: Creamy tomato sauce with tender chicken; house favorite
+    - item: Lamb vindaloo
+      note: Spicy and tangy; heat level on request
+    - item: Garlic naan
+      note: Fresh from the tandoor; great with curries
+  notes: Downtown location near the common; dine-in, takeout, and delivery available
+  comments:
+    - Open on Thanksgiving Day 2025
+  last_verified: 2025-11-28
+  sources:
+    - type: website
+      detail: https://paradiseofindia.com/
