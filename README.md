@@ -13,7 +13,7 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
 - `docs/index.html`: simple GitHub Pages view that reads the YAML and lists spots.
 
 ## Latest updates
-- Last restaurant added: Paradise of India (2025-11-28)
+- Last restaurant added: Hangar Pub and Grill (2025-11-28)
 - Last comment added: “Open on Thanksgiving Day 2025” (Paradise of India)
 
 ## How to contribute

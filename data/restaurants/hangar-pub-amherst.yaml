@@ -1,0 +1,39 @@
+- name: Hangar Pub and Grill
+  town: Amherst
+  neighborhood: University Drive
+  address: 10 University Drive, Amherst, MA 01002
+  coordinates:
+    lat: 42.3726
+    lng: -72.5199
+  phone: 413-549-9464
+  website: https://www.hangarpub.com/locations-2/location-amherst
+  cuisine: Pub food and wings
+  price: $$
+  ordering:
+    - dine-in
+    - takeout
+    - delivery
+  dietary:
+    vegetarian_friendly: true
+    vegan_options: false
+    gluten_free_friendly: false
+  hours:
+    mon: closed
+    tue: "16:00-23:00"
+    wed: "16:00-23:00"
+    thu: "11:30-23:00"
+    fri: "11:30-23:59"
+    sat: "11:30-23:59"
+    sun: "12:00-23:00"
+  highlight_items:
+    - item: Wings and boneless tenders
+      note: Large sauce selection; signature item
+    - item: Burgers and sandwiches
+      note: Pub staples with generous portions
+    - item: Amherst Brewing drafts
+      note: House taps alongside rotating beers
+  notes: University Drive location; delivery available
+  last_verified: 2025-11-28
+  sources:
+    - type: website
+      detail: https://www.hangarpub.com/locations
