@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mhlotto.github.io/413-food/sitemap.xml

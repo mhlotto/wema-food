@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Amherst, MA Food Guide</title>
+  <title>Amherst, MA Food Guide – Restaurants, Bars, and Cafes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Community-maintained guide to restaurants, bars, and cafes in Amherst, MA and nearby towns. Filter by price, cuisine, offerings, and hours.">
+  <link rel="canonical" href="https://mhlotto.github.io/413-food/">
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@500;600&display=swap");
     :root {
@@ -181,7 +183,7 @@
     <div id="topbar">
       <div>
         <h1>Amherst, MA Food Guide</h1>
-        <p class="muted">Client-side view of <code>docs/restaurants.yaml</code>. Use search and filters (price, type, offerings, open-at time) to find food, drinks, or coffee.</p>
+        <p class="muted">Community-maintained list of restaurants, bars, cafes, and takeout spots in Amherst, MA and nearby towns. Use the filters to find late-night food, coffee, breakfast, lunch, dinner, or drinks.</p>
       </div>
       <div>
         <a href="random.html" style="margin-right:12px;">Random</a>
@@ -221,17 +223,23 @@
       </div>
     </div>
     <div class="table-wrap">
+      <noscript>
+        <div class="card" role="note">
+          <p>This guide uses JavaScript to load and filter restaurants. You can still browse the raw data here:</p>
+          <p><a href="https://github.com/mhlotto/413-food/tree/main/data/restaurants" target="_blank" rel="noopener noreferrer">restaurants YAML on GitHub</a>.</p>
+        </div>
+      </noscript>
       <table id="table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Town</th>
-            <th>Neighborhood</th>
-            <th>Type</th>
-            <th>Cuisine</th>
-            <th>Price</th>
-            <th>Ordering</th>
-            <th>Highlights</th>
+            <th scope="col">Name</th>
+            <th scope="col">Town</th>
+            <th scope="col">Neighborhood</th>
+            <th scope="col">Type</th>
+            <th scope="col">Cuisine</th>
+            <th scope="col">Price</th>
+            <th scope="col">Ordering</th>
+            <th scope="col">Highlights</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -280,6 +288,7 @@
         if (!Array.isArray(data)) throw new Error("Data format unexpected");
         state.entries = data.slice().sort((a, b) => a.name.localeCompare(b.name));
         renderLastUpdated(state.entries);
+        renderJsonLd(state.entries);
         applyFilters();
         hydrateFromHash();
       } catch (err) {
@@ -580,6 +589,38 @@
 
     function escapeAttr(str) {
       return escapeHtml(str).replace(/"/g, "&quot;");
+    }
+
+    function renderJsonLd(entries = []) {
+      if (!Array.isArray(entries) || !entries.length) return;
+      const list = entries.slice(0, 50).map((e, idx) => ({
+        "@type": "Restaurant",
+        "name": e.name || "",
+        "position": idx + 1,
+        "address": e.address
+          ? {
+              "@type": "PostalAddress",
+              "streetAddress": e.address,
+              "addressLocality": e.town || "",
+              "addressRegion": "MA",
+              "addressCountry": "US"
+            }
+          : undefined,
+        "servesCuisine": e.cuisine || "",
+        "priceRange": e.price || "",
+        "url": window.location.href.split("#")[0]
+      }));
+      const payload = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Amherst, MA Food Guide",
+        "description": "Restaurants, bars, and cafes in Amherst, MA and nearby towns.",
+        "itemListElement": list
+      };
+      const script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.textContent = JSON.stringify(payload);
+      document.head.appendChild(script);
     }
 
     function slugify(str) {
