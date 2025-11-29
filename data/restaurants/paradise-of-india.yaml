@@ -8,6 +8,10 @@
   phone: 413-256-1067
   website: https://paradiseofindia.com/
   cuisine: Indian
+  categories:
+    - restaurant
+  offerings:
+    - food
   price: $$
   ordering:
     - dine-in

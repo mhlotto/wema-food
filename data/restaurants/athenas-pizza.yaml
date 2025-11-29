@@ -8,6 +8,10 @@
   phone: 413-549-9900
   website: https://www.athenaspizzaamherst.com/
   cuisine: Pizza and Italian
+  categories:
+    - restaurant
+  offerings:
+    - food
   price: $
   ordering:
     - dine-in

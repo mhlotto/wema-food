@@ -8,6 +8,12 @@
   phone: 413-549-9464
   website: https://www.hangarpub.com/locations-2/location-amherst
   cuisine: Pub food and wings
+  categories:
+    - restaurant
+    - bar
+  offerings:
+    - food
+    - alcohol
   price: $$
   ordering:
     - dine-in

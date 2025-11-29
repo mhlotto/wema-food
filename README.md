@@ -26,7 +26,8 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
 
 ## Restaurant fields (summary)
 - `name`, `neighborhood`, `address`, `phone`, `website`, optional `coordinates` (`lat`, `lng`).
-- `cuisine`, `price` ($/$$/$$$), `ordering` (dine-in/takeout/delivery), `hours` (strings like `11:00-21:00`).
+- `cuisine`, optional `categories` (`restaurant`/`bar`/`cafe`), `price` ($/$$/$$$), `ordering` (dine-in/takeout/delivery), `hours` (strings like `11:00-21:00`).
+- Optional `offerings` list: `food`, `alcohol`, `coffee` (powers open-now filters).
 - `dietary` flags (vegetarian_friendly, vegan_options, gluten_free_friendly), `highlight_items` (signature dishes), `notes` (parking, cash-only, waits).
 - Optional: `comments` (short freeform notes for the detail view).
 - `last_verified` (YYYY-MM-DD) and `sources` (visited/menu/social links).
@@ -43,10 +44,16 @@ A community-maintained list of where to eat in and around Amherst, MA. Data live
   phone: 413-555-0100
   website: https://example.com
   cuisine: Example cuisine
+  categories:
+    - restaurant
+    - bar
   price: $$
   ordering:
     - dine-in
     - takeout
+  offerings:
+    - food
+    - alcohol
   dietary:
     vegetarian_friendly: true
     vegan_options: false

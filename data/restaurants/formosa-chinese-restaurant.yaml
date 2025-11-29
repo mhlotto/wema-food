@@ -8,6 +8,10 @@
   phone: 413-253-7835
   website: https://www.formosaamherst.com/
   cuisine: Taiwanese and Chinese
+  categories:
+    - restaurant
+  offerings:
+    - food
   price: $$
   ordering:
     - dine-in

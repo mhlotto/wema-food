@@ -8,6 +8,10 @@
   phone: 413-253-7673
   website: https://zhusamherst.com/
   cuisine: Asian bistro, Chinese, ramen
+  categories:
+    - restaurant
+  offerings:
+    - food
   price: $$
   ordering:
     - dine-in

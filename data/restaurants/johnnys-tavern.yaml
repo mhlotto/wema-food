@@ -8,6 +8,12 @@
   phone: 413-253-8000
   website: https://www.johnnystavernamherst.com/
   cuisine: American tavern, wood-fired pizza
+  categories:
+    - restaurant
+    - bar
+  offerings:
+    - food
+    - alcohol
   price: $$
   ordering:
     - dine-in

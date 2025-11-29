@@ -63,6 +63,17 @@
       margin-bottom: 1rem;
       flex-wrap: wrap;
     }
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+    .control-label {
+      font-weight: 700;
+      color: #1f2937;
+      font-size: 0.95rem;
+    }
     input[type="search"], select {
       padding: 0.55rem 0.75rem;
       font-size: 1rem;
@@ -72,10 +83,47 @@
       background: #fdfdfd;
       transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
+    input[type="time"] {
+      padding: 0.55rem 0.65rem;
+      font-size: 1rem;
+      border: 1px solid #d5d9e0;
+      border-radius: 10px;
+      background: #fdfdfd;
+      min-width: 130px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
     input[type="search"]:focus, select:focus {
       outline: none;
       border-color: #0b5cab;
       box-shadow: 0 0 0 3px rgba(11, 92, 171, 0.12);
+    }
+    input[type="time"]:focus {
+      outline: none;
+      border-color: #0b5cab;
+      box-shadow: 0 0 0 3px rgba(11, 92, 171, 0.12);
+    }
+    button {
+      padding: 0.55rem 0.8rem;
+      border-radius: 10px;
+      border: 1px solid #0b5cab;
+      background: #0b5cab;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.secondary {
+      background: #fff;
+      color: #0b5cab;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid #d5d9e0;
+      background: #fdfdfd;
+      font-size: 0.95rem;
     }
     table {
       width: 100%;
@@ -133,7 +181,7 @@
     <div id="topbar">
       <div>
         <h1>Amherst, MA Food Guide</h1>
-        <p class="muted">Client-side view of <code>docs/restaurants.yaml</code>. Use search to filter by name, town, neighborhood, or cuisine.</p>
+        <p class="muted">Client-side view of <code>docs/restaurants.yaml</code>. Use search and filters (price, type, offerings, open-at time) to find food, drinks, or coffee.</p>
       </div>
       <div>
         <a href="random.html" style="margin-right:12px;">Random</a>
@@ -150,6 +198,27 @@
         <option value="$$">$$</option>
         <option value="$$$">$$$</option>
       </select>
+      <div class="control-group" aria-label="Time filter">
+        <span class="control-label">Open at</span>
+        <select id="dayFilter" aria-label="Day of week">
+          <option value="today">Today</option>
+          <option value="mon">Mon</option>
+          <option value="tue">Tue</option>
+          <option value="wed">Wed</option>
+          <option value="thu">Thu</option>
+          <option value="fri">Fri</option>
+          <option value="sat">Sat</option>
+          <option value="sun">Sun</option>
+        </select>
+        <input id="timeFilter" type="time" aria-label="Time of day">
+        <button id="nowButton" type="button" class="secondary">Now</button>
+      </div>
+      <div class="control-group" aria-label="Offerings filter">
+        <span class="control-label">Looking for</span>
+        <label class="chip"><input type="checkbox" name="offeringFilter" value="food"> Food</label>
+        <label class="chip"><input type="checkbox" name="offeringFilter" value="alcohol"> Drinks</label>
+        <label class="chip"><input type="checkbox" name="offeringFilter" value="coffee"> Coffee</label>
+      </div>
     </div>
     <div class="table-wrap">
       <table id="table">
@@ -158,6 +227,7 @@
             <th>Name</th>
             <th>Town</th>
             <th>Neighborhood</th>
+            <th>Type</th>
             <th>Cuisine</th>
             <th>Price</th>
             <th>Ordering</th>
@@ -176,18 +246,30 @@
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
   <script>
     const DATA_URL = "./restaurants.yaml";
+    const DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
     const state = { entries: [], filtered: [], selectedSlug: null };
     let currentDetailRow = null;
 
     const statusEl = document.getElementById("status");
     const searchEl = document.getElementById("search");
     const priceEl = document.getElementById("priceFilter");
+    const dayEl = document.getElementById("dayFilter");
+    const timeEl = document.getElementById("timeFilter");
+    const nowButton = document.getElementById("nowButton");
+    const offeringEls = Array.from(document.querySelectorAll('input[name="offeringFilter"]'));
     const tbody = document.querySelector("#table tbody");
     const lastUpdatedEl = document.getElementById("last-updated");
     const copyrightYearEl = document.getElementById("copyright-year");
 
     searchEl.addEventListener("input", applyFilters);
     priceEl.addEventListener("change", applyFilters);
+    dayEl.addEventListener("change", applyFilters);
+    timeEl.addEventListener("input", applyFilters);
+    nowButton.addEventListener("click", () => {
+      setTimeToNow();
+      applyFilters();
+    });
+    offeringEls.forEach((el) => el.addEventListener("change", applyFilters));
 
     async function loadData() {
       try {
@@ -197,10 +279,8 @@
         const data = jsyaml.load(text);
         if (!Array.isArray(data)) throw new Error("Data format unexpected");
         state.entries = data.slice().sort((a, b) => a.name.localeCompare(b.name));
-        statusEl.textContent = `Loaded ${state.entries.length} spots`;
         renderLastUpdated(state.entries);
-        state.filtered = state.entries;
-        renderTable();
+        applyFilters();
         hydrateFromHash();
       } catch (err) {
         console.error(err);
@@ -211,12 +291,20 @@
     function applyFilters() {
       const term = searchEl.value.trim().toLowerCase();
       const price = priceEl.value;
+      const dayKey = normalizeDay(dayEl.value);
+      const timeValue = timeEl.value;
+      const timeActive = Boolean(timeValue);
+      const requestedOfferings = offeringEls.filter((el) => el.checked).map((el) => el.value);
+
       state.filtered = state.entries.filter((entry) => {
         const haystack = `${entry.name} ${entry.town || ""} ${entry.neighborhood || ""} ${entry.cuisine || ""}`.toLowerCase();
         const matchesTerm = !term || haystack.includes(term);
         const matchesPrice = !price || entry.price === price;
-        return matchesTerm && matchesPrice;
+        const matchesOfferings = requestedOfferings.length === 0 || requestedOfferings.every((o) => getOfferings(entry).includes(o));
+        const matchesTime = !timeActive || isOpenAt(entry.hours, dayKey, timeValue);
+        return matchesTerm && matchesPrice && matchesOfferings && matchesTime;
       });
+      updateStatusLine({ timeActive, dayKey, timeValue, requestedOfferings });
       renderTable();
     }
 
@@ -240,6 +328,7 @@
           <td>${escapeHtml(entry.name || "")}</td>
           <td>${escapeHtml(entry.town || "")}</td>
           <td>${escapeHtml(entry.neighborhood || "")}</td>
+          <td>${renderCategories(entry.categories)}</td>
           <td>${escapeHtml(entry.cuisine || "")}</td>
           <td>${escapeHtml(entry.price || "")}</td>
           <td>${renderOrdering(entry.ordering)}</td>
@@ -252,6 +341,11 @@
     function renderOrdering(ordering = []) {
       if (!Array.isArray(ordering) || ordering.length === 0) return "";
       return ordering.map((o) => `<span class="badge">${escapeHtml(o)}</span>`).join(" ");
+    }
+
+    function renderCategories(categories = []) {
+      if (!Array.isArray(categories) || categories.length === 0) return "";
+      return categories.map((c) => `<span class="badge">${escapeHtml(c)}</span>`).join(" ");
     }
 
     function renderHighlights(list = []) {
@@ -275,7 +369,7 @@
       if (slug) history.replaceState(null, "", `#${slug}`);
       const detailRow = document.createElement("tr");
       detailRow.className = "detail-row";
-      detailRow.innerHTML = `<td colspan="7">${renderDetailCard(entry)}</td>`;
+      detailRow.innerHTML = `<td colspan="8">${renderDetailCard(entry)}</td>`;
       row.insertAdjacentElement("afterend", detailRow);
       currentDetailRow = detailRow;
     }
@@ -295,6 +389,10 @@
       const links = [];
       if (entry.website) links.push(`<a href="${escapeAttr(entry.website)}" target="_blank" rel="noopener noreferrer">Website</a>`);
       if (entry.phone) links.push(`<a href="tel:${escapeAttr(entry.phone)}">Call</a>`);
+      const offerings = renderOfferings(entry.offerings);
+      const categories = renderCategories(entry.categories);
+      const timeContext = getTimeFilter();
+      const openNote = timeContext ? renderOpenNote(entry, timeContext) : "";
 
       const tags = [];
       if (entry.town) tags.push(pill(entry.town));
@@ -303,6 +401,8 @@
       if (entry.last_verified) tags.push(pill(`Verified ${entry.last_verified}`));
 
       const sections = [];
+      if (categories) sections.push(section("Categories", categories));
+      if (offerings) sections.push(section("Offerings", offerings));
       sections.push(section("Ordering", renderOrdering(entry.ordering)));
       sections.push(section("Dietary", renderDietary(entry.dietary)));
       sections.push(section("Hours", renderHours(entry.hours)));
@@ -327,6 +427,7 @@
           </div>
           <div style="margin:0.4rem 0 0.25rem;">${tags.join("")}</div>
           <div style="margin:0.2rem 0 0.4rem;">${links.join(" · ")}</div>
+          ${openNote}
           ${sections.join("")}
         </div>
       `;
@@ -351,6 +452,12 @@
       return flags.map((f) => `<span class="badge">${escapeHtml(f)}</span>`).join(" ");
     }
 
+    function renderOfferings(offerings = []) {
+      const list = getOfferings(offerings);
+      if (!list.length) return "";
+      return list.map((o) => `<span class="badge">${escapeHtml(capitalize(o))}</span>`).join(" ");
+    }
+
     function renderHours(hours = {}) {
       if (typeof hours !== "object") return "";
       const days = ["mon","tue","wed","thu","fri","sat","sun"];
@@ -358,6 +465,108 @@
         .filter((d) => hours[d])
         .map((d) => `<div><strong>${d.toUpperCase()}</strong>: ${escapeHtml(hours[d])}</div>`)
         .join("");
+    }
+
+    function updateStatusLine(context = {}) {
+      const base = `Showing ${state.filtered.length} of ${state.entries.length}`;
+      const parts = [base];
+      if (context.timeActive && context.timeValue) {
+        parts.push(`open ${formatDayLabel(context.dayKey)} @ ${context.timeValue}`);
+      }
+      if (context.requestedOfferings && context.requestedOfferings.length) {
+        parts.push(`for ${context.requestedOfferings.map(capitalize).join(", ")}`);
+      }
+      statusEl.textContent = parts.join(" · ");
+    }
+
+    function renderOpenNote(entry, timeContext) {
+      const open = isOpenAt(entry.hours, timeContext.dayKey, timeContext.time);
+      const dayLabel = formatDayLabel(timeContext.dayKey);
+      return `<div class="muted" style="margin:0 0 0.6rem;">${open ? "Open" : "Closed"} ${dayLabel ? `${dayLabel} ` : ""}at ${escapeHtml(timeContext.time)}</div>`;
+    }
+
+    function getTimeFilter() {
+      if (!timeEl.value) return null;
+      return { dayKey: normalizeDay(dayEl.value), time: timeEl.value };
+    }
+
+    function normalizeDay(value) {
+      if (value && value !== "today" && DAY_KEYS.includes(value)) return value;
+      return dayKeyFromDate(new Date());
+    }
+
+    function dayKeyFromDate(date) {
+      return DAY_KEYS[date.getDay()];
+    }
+
+    function previousDay(dayKey) {
+      const idx = DAY_KEYS.indexOf(dayKey);
+      if (idx === -1) return "sun";
+      return DAY_KEYS[(idx + DAY_KEYS.length - 1) % DAY_KEYS.length];
+    }
+
+    function isOpenAt(hours = {}, dayKey, timeStr) {
+      if (!hours || typeof hours !== "object") return false;
+      const time = timeToMinutes(timeStr);
+      if (Number.isNaN(time)) return false;
+      const todayRange = parseRange(hours[dayKey]);
+      if (todayRange) {
+        if (!todayRange.crossesMidnight && time >= todayRange.start && time <= todayRange.end) {
+          return true;
+        }
+        if (todayRange.crossesMidnight && time >= todayRange.start) {
+          return true;
+        }
+      }
+      const prevRange = parseRange(hours[previousDay(dayKey)]);
+      if (prevRange && prevRange.crossesMidnight && time <= prevRange.end) {
+        return true;
+      }
+      return false;
+    }
+
+    function parseRange(rangeStr) {
+      if (!rangeStr || typeof rangeStr !== "string") return null;
+      if (rangeStr.toLowerCase() === "closed") return null;
+      const parts = rangeStr.split("-");
+      if (parts.length !== 2) return null;
+      const start = timeToMinutes(parts[0]);
+      const end = timeToMinutes(parts[1]);
+      if (Number.isNaN(start) || Number.isNaN(end)) return null;
+      return { start, end, crossesMidnight: start > end };
+    }
+
+    function timeToMinutes(str) {
+      if (!str || typeof str !== "string") return NaN;
+      const [h, m] = str.split(":").map((v) => parseInt(v, 10));
+      if (Number.isNaN(h) || Number.isNaN(m)) return NaN;
+      return h * 60 + m;
+    }
+
+    function formatDayLabel(dayKey) {
+      if (!dayKey) return "";
+      const todayKey = normalizeDay("today");
+      if (dayEl.value === "today" && dayKey === todayKey) return "today";
+      return dayKey.toUpperCase();
+    }
+
+    function setTimeToNow() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, "0");
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+      dayEl.value = "today";
+      timeEl.value = `${hours}:${minutes}`;
+    }
+
+    function getOfferings(entryOrList) {
+      const raw = Array.isArray(entryOrList) ? entryOrList : entryOrList?.offerings;
+      if (Array.isArray(raw) && raw.length) return raw;
+      return ["food"];
+    }
+
+    function capitalize(str) {
+      if (!str) return "";
+      return String(str).charAt(0).toUpperCase() + String(str).slice(1);
     }
 
     function escapeHtml(str) {

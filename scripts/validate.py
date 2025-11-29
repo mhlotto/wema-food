@@ -15,6 +15,8 @@ except ModuleNotFoundError as exc:  # pragma: no cover
 PRICE_VALUES = {"$", "$$", "$$$"}
 DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 ORDERING_VALUES = {"dine-in", "takeout", "delivery"}
+CATEGORY_VALUES = {"restaurant", "bar", "cafe"}
+OFFERING_VALUES = {"food", "alcohol", "coffee"}
 DIETARY_KEYS = ["vegetarian_friendly", "vegan_options", "gluten_free_friendly"]
 HOUR_PATTERN = re.compile(r"^(closed|\d{1,2}:\d{2}-\d{1,2}:\d{2})$")
 DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -48,8 +50,26 @@ def validate_entry(entry, idx, errors):
         if field not in entry:
             errors.append(f"{prefix}: missing field `{field}`")
 
+    if "categories" in entry:
+        categories = entry.get("categories", [])
+        if not isinstance(categories, list):
+            errors.append(f"{prefix}: categories must be a list")
+        else:
+            bad = [c for c in categories if c not in CATEGORY_VALUES]
+            if bad:
+                errors.append(f"{prefix}: invalid categories {bad}; allowed {sorted(CATEGORY_VALUES)}")
+
     if "price" in entry and entry["price"] not in PRICE_VALUES:
         errors.append(f"{prefix}: price must be one of {sorted(PRICE_VALUES)}")
+
+    if "offerings" in entry:
+        offerings = entry.get("offerings", [])
+        if not isinstance(offerings, list):
+            errors.append(f"{prefix}: offerings must be a list")
+        else:
+            bad = [o for o in offerings if o not in OFFERING_VALUES]
+            if bad:
+                errors.append(f"{prefix}: invalid offerings {bad}; allowed {sorted(OFFERING_VALUES)}")
 
     if "ordering" in entry:
         ordering = entry.get("ordering", [])

@@ -8,6 +8,12 @@
   phone: 
   website: https://www.amherstoysterbar.com/
   cuisine: Seafood, oysters
+  categories:
+    - restaurant
+    - bar
+  offerings:
+    - food
+    - alcohol
   price: $$$
   ordering:
     - dine-in

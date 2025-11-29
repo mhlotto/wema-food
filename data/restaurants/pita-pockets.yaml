@@ -8,6 +8,10 @@
   phone: 413-256-3600
   website: https://www.pitapocketsamherst.com/
   cuisine: Middle Eastern
+  categories:
+    - restaurant
+  offerings:
+    - food
   price: $
   ordering:
     - dine-in
