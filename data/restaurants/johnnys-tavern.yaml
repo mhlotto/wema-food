@@ -7,7 +7,7 @@
     lng: -72.5185
   phone: 413-253-8000
   website: https://www.johnnystavernamherst.com/
-  cuisine: American tavern, wood-fired pizza
+  cuisine: American tavern, comfort food
   categories:
     - restaurant
     - bar
@@ -31,10 +31,10 @@
     sat: "11:30-23:00"
     sun: "11:30-22:00"
   highlight_items:
-    - item: Wood-fired margherita pizza
-      note: Thin crust with fresh mozzarella and basil
     - item: Tavern burger
       note: Classic burger with cheddar on a brioche bun
+    - item: Comfort mains
+      note: Pub-style entrees and salads; rotating specials
   notes: Casual tavern with bar seating; online reservations via site
   last_verified: 2025-11-25
   sources:
