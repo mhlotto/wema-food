@@ -65,6 +65,11 @@
       margin-bottom: 1rem;
       flex-wrap: wrap;
     }
+    #static-fallback { margin-bottom: 1rem; }
+    .js #static-fallback { display: none; }
+    #static-fallback table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    #static-fallback th, #static-fallback td { padding: 0.55rem 0.5rem; border-bottom: 1px solid #e6e9ef; text-align: left; }
+    #static-fallback thead { background: #f2f5fb; }
     .control-group {
       display: flex;
       align-items: center;
@@ -229,6 +234,33 @@
           <p><a href="https://github.com/mhlotto/413-food/tree/main/data/restaurants" target="_blank" rel="noopener noreferrer">restaurants YAML on GitHub</a>.</p>
         </div>
       </noscript>
+      <div id="static-fallback" aria-label="Static restaurant list">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Town</th>
+              <th scope="col">Neighborhood</th>
+              <th scope="col">Type</th>
+              <th scope="col">Cuisine</th>
+              <th scope="col">Price</th>
+            </tr>
+          </thead>
+          <tbody>
+<!-- STATIC_FALLBACK_START -->
+<tr><td>Amherst Oyster Bar</td><td>Amherst</td><td>Downtown Amherst</td><td>restaurant, bar</td><td>Seafood, oysters</td><td>$$$</td></tr>
+<tr><td>Athena&#x27;s Pizza Amherst</td><td>Amherst</td><td>University Drive</td><td>restaurant</td><td>Pizza and Italian</td><td>$</td></tr>
+<tr><td>Formosa Chinese Restaurant</td><td>Amherst</td><td>Downtown Amherst</td><td>restaurant</td><td>Taiwanese and Chinese</td><td>$$</td></tr>
+<tr><td>Hangar Pub and Grill</td><td>Amherst</td><td>University Drive</td><td>restaurant, bar</td><td>Pub food and wings</td><td>$$</td></tr>
+<tr><td>Johnny&#x27;s Tavern</td><td>Amherst</td><td>Downtown Amherst</td><td>restaurant, bar</td><td>American tavern, wood-fired pizza</td><td>$$</td></tr>
+<tr><td>Paradise of India</td><td>Amherst</td><td>Downtown Amherst</td><td>restaurant</td><td>Indian</td><td>$$</td></tr>
+<tr><td>Pita Pockets</td><td>Amherst</td><td>Downtown Amherst</td><td>restaurant</td><td>Middle Eastern</td><td>$</td></tr>
+<tr><td>The Archives</td><td>Amherst</td><td>Downtown Amherst</td><td>bar</td><td>Cocktail bar and snacks</td><td>$$$</td></tr>
+<tr><td>Zhu&#x27;s Kitchen Asian Bistro and Ramen</td><td>Amherst</td><td>Downtown Amherst</td><td>restaurant</td><td>Asian bistro, Chinese, ramen</td><td>$$</td></tr>
+<!-- STATIC_FALLBACK_END -->
+          </tbody>
+        </table>
+      </div>
       <table id="table">
         <thead>
           <tr>
@@ -253,6 +285,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
   <script>
+    document.documentElement.classList.add("js");
     const DATA_URL = "./restaurants.yaml";
     const DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
     const state = { entries: [], filtered: [], selectedSlug: null };

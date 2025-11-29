@@ -9,12 +9,14 @@ from pathlib import Path
 from typing import List
 
 import yaml  # type: ignore
+from html import escape
 
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC_DIR = ROOT / "data" / "restaurants"
 AGG_PATH = ROOT / "data" / "restaurants.yaml"
 DOCS_PATH = ROOT / "docs" / "restaurants.yaml"
+INDEX_PATH = ROOT / "docs" / "index.html"
 
 
 def load_entries() -> List[dict]:
@@ -48,6 +50,44 @@ def main() -> None:
         write_yaml(DOCS_PATH, entries)
     else:
         print("docs/ folder not found; skipped writing docs/restaurants.yaml")
+    update_static_fallback(entries)
+
+
+def update_static_fallback(entries: list) -> None:
+    """Render a lightweight static table into docs/index.html between marker comments."""
+    if not INDEX_PATH.exists():
+        print("docs/index.html not found; skipped static fallback injection")
+        return
+    with open(INDEX_PATH, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    start_marker = "<!-- STATIC_FALLBACK_START -->"
+    end_marker = "<!-- STATIC_FALLBACK_END -->"
+    if start_marker not in content or end_marker not in content:
+        print("Static fallback markers not found in docs/index.html; skipped injection")
+        return
+
+    rows = []
+    for entry in entries:
+        name = escape(str(entry.get("name", "")))
+        town = escape(str(entry.get("town", "")))
+        neighborhood = escape(str(entry.get("neighborhood", "")))
+        categories = ", ".join(entry.get("categories", []) or [])
+        cuisine = escape(str(entry.get("cuisine", "")))
+        price = escape(str(entry.get("price", "")))
+        rows.append(
+            f"<tr><td>{name}</td><td>{town}</td><td>{neighborhood}</td><td>{escape(categories)}</td><td>{cuisine}</td><td>{price}</td></tr>"
+        )
+    table_html = "\n".join(rows)
+
+    start_idx = content.index(start_marker)
+    end_idx = content.index(end_marker)
+    new_section = f"{start_marker}\n{table_html}\n{end_marker}"
+    new_content = content[:start_idx] + new_section + content[end_idx + len(end_marker) :]
+
+    with open(INDEX_PATH, "w", encoding="utf-8") as f:
+        f.write(new_content)
+    print(f"Updated static fallback table in {INDEX_PATH}")
 
 
 if __name__ == "__main__":
